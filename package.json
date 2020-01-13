@@ -4,12 +4,17 @@
   "description": "introduccion a nodejs",
   "main": "src/index.js",
   "scripts": {
-    "start":"node src/index.js",
+    "start": "node src/index.js",
+    "dev":"nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Darwin Morocho",
   "license": "MIT",
   "dependencies": {
-    "countries-list": "^2.5.0"
+    "countries-list": "^2.5.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
