@@ -1,21 +1,26 @@
-const express = require("express");
+const express = require('express');
 
-const { info, error } = require("./modules/my-log");
-const { countries } = require("countries-list");
+const { info, error } = require('./modules/my-log');
+const { countries } = require('countries-list');
 
 const app = express();
 
-app.get("/", function(request, response) {
-  response.send("HELLO");
+app.get('/', (request, response) => {
+  response.send('HELLO');
 });
 
-app.get("/info", function(request, response) {
-  info("hola info");
-  response.send("info nodemon 2");
+app.get('/info', (request, response) => {
+  info('hola info');
+  response.send('info nodemon 2');
 });
 
-app.get("*", function(request, response) {
-  response.status(404).send("NOT FOUND");
+app.get('/country', (request, response) => {
+  console.log('request.query', request.query);
+  response.json(countries[request.query.code]);
+});
+
+app.get('*', (request, response) => {
+  response.status(404).send('NOT FOUND');
 });
 
 // var server = http.createServer(function(request, response) {
@@ -56,6 +61,6 @@ app.get("*", function(request, response) {
 //   }
 // });
 
-app.listen(4000, function() {
-  console.log("running on 4000");
+app.listen(4000, () => {
+  console.log('running on 4000');
 });
