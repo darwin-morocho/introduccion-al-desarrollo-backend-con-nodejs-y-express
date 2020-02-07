@@ -1,66 +1,35 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
-const { info, error } = require('./modules/my-log');
-const { countries } = require('countries-list');
+dotenv.config();
+
+const routesV1 = require('./routes/v1');
 
 const app = express();
 
-app.get('/', (request, response) => {
-  response.send('HELLO');
-});
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/info', (request, response) => {
-  info('hola info');
-  response.send('info nodemon 2');
-});
+// parse application/json
+app.use(bodyParser.json());
 
-app.get('/country', (request, response) => {
-  console.log('request.query', request.query);
-  response.json(countries[request.query.code]);
-});
+routesV1(app);
 
-app.get('*', (request, response) => {
-  response.status(404).send('NOT FOUND');
-});
+const PORT = process.env.PORT || 4000;
 
-// var server = http.createServer(function(request, response) {
-//   var parsed = url.parse(request.url);
-//   console.log("parsed:", parsed);
-
-//   var pathname = parsed.pathname;
-
-//   var query = querystring.parse(parsed.query);
-//   console.log("query", query);
-
-//   if (pathname === "/") {
-//     response.writeHead(200, { "Content-Type": "text/html" });
-//     response.write("<html><body><p>HOME PAGE</p></body></html>");
-//     response.end();
-//   } else if (pathname === "/exit") {
-//     response.writeHead(200, { "Content-Type": "text/html" });
-//     response.write("<html><body><p>BYE</p></body></html>");
-//     response.end();
-//   } else if (pathname === "/country") {
-//     response.writeHead(200, { "Content-Type": "application/json" });
-//     response.write(JSON.stringify(countries[query.code]));
-//     response.end();
-//   } else if (pathname === "/info") {
-//     var result = info(pathname);
-//     response.writeHead(200, { "Content-Type": "text/html" });
-//     response.write(result);
-//     response.end();
-//   } else if (pathname === "/error") {
-//     var result = error(pathname);
-//     response.writeHead(200, { "Content-Type": "text/html" });
-//     response.write(result);
-//     response.end();
-//   } else {
-//     response.writeHead(404, { "Content-Type": "text/html" });
-//     response.write("<html><body><p>NOT FOUND</p></body></html>");
-//     response.end();
-//   }
-// });
-
-app.listen(4000, () => {
-  console.log('running on 4000');
-});
+mongoose
+  .connect(process.env.MONGO, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log('Connected to mongodb');
+    app.listen(PORT, () => {
+      console.log(`running on ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.log('mongdb error', error);
+  });
